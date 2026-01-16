@@ -39,12 +39,12 @@ namespace Constants {
         MOTOR_FRONT_LEFT_FORWARD, MOTOR_FRONT_LEFT_BACKWARD,
         MOTOR_REAR_RIGHT_FORWARD, MOTOR_REAR_RIGHT_BACKWARD,
         MOTOR_REAR_LEFT_FORWARD, MOTOR_REAR_LEFT_BACKWARD,
-        Pump
+        Pump, DistanceOutput
     };
 
     static const int INPUTS[] = {
         FireLeft, FireRight, DistanceInput,
-        DistanceOutput, FallInput,
+        FallInput,
         CameraHorizontal, CameraVertical
     };
 
