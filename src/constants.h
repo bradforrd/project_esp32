@@ -10,8 +10,8 @@ struct ProperData {
 #define FireLeft 25
 #define FireRight 26
 
-#define DistanceInput 34
-#define DistanceOutput 35
+#define DistanceInput 35
+#define DistanceOutput 34
 
 #define FallInput 33
 

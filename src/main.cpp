@@ -1,10 +1,11 @@
 #include <Arduino.h>
 #include "constants.h"
 #include "movement.h"
+#include "senzors.h"
 
 void DefinePins(ProperData pins, bool input) {
-    for (int i = 0; i < pins.size; i++)
-      pinMode(pins.data[i], input ? INPUT : OUTPUT);
+  for (int i = 0; i < pins.size; i++)
+    pinMode(pins.data[i], input ? INPUT : OUTPUT);
 }
 
 // Get rid of issues (electronics)
@@ -14,7 +15,7 @@ void FixStartIssues(ProperData pins) {
 }
 
 void setup() {
-  // Define every pin in robot
+  // Define every pin in bot
   const ProperData inputs = Constants::GetInputs();
   const ProperData outputs = Constants::GetOutputs();
 
@@ -29,4 +30,6 @@ void setup() {
 
 void loop() {
   Movement::Update();
+  long distance = Senzors::ReadDistance();
+  
 }
