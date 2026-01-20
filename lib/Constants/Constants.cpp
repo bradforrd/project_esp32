@@ -11,13 +11,4 @@ constexpr int outputs[] = {
     Pump, DistanceTrig
 };
 
-// CHANGE!!!
-
-struct PinData {
-    const int* inputs; 
-    const int* outputs;
-};
-
-PinData GetAllPinsInRobot() {
-    return { inputs, outputs };
-}
+// Add function to get inputs and outputs
