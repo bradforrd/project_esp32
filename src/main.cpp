@@ -1,35 +1,21 @@
 #include <Arduino.h>
-#include "constants.h"
-#include "movement.h"
-#include "senzors.h"
+#include <Constants.h>
 
-void DefinePins(ProperData pins, bool input) {
-  for (int i = 0; i < pins.size; i++)
-    pinMode(pins.data[i], input ? INPUT : OUTPUT);
-}
-
-// Get rid of issues (electronics)
-void FixStartIssues(ProperData pins) {
-  for (int i = 0; i < pins.size; i++)
-    digitalWrite(pins.data[i], LOW);
+// Funkcia, ktora zadefinuje kazdy pin v robotovi
+template <size_t N>
+void definePins(const int (&pins)[N], bool isInput) {
+  for (int pin : pins)
+    pinMode(pin, isInput ? INPUT : OUTPUT);
 }
 
 void setup() {
-  // Define every pin in bot
-  const ProperData inputs = Constants::GetInputs();
-  const ProperData outputs = Constants::GetOutputs();
+  // Definovanie kazdeho pinu v robotovi (input | output)
+  auto [ inputs, outputs ] = GetAllPinsInRobot();
 
-  DefinePins(inputs, true);
-  DefinePins(outputs, false);
-
-  const int _issues[] = { Pump, MOTOR_FRONT_LEFT_FORWARD };
-  const ProperData issues = { _issues, sizeof(_issues) / sizeof(_issues[0]) };
-
-  FixStartIssues(issues);
+  definePins(inputs, true);
+  definePins(outputs, false);
 }
 
 void loop() {
-  Movement::Update();
-  long distance = Senzors::ReadDistance();
   
 }
