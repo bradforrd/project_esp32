@@ -49,3 +49,15 @@
 //////////////
 
 #define Pump 5
+
+/// <summary>
+/// Pomocne funkcie
+/// </summary>
+
+// Struktura, ktora obsahuje inputy a outputy (tuto strukturu vrati funkcia GetAllPinsInRobot)
+struct Pins {
+    const int* inputs;
+    const int* outputs;
+};
+
+Pins getAllPinsInRobot();

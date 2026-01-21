@@ -11,4 +11,6 @@ constexpr int outputs[] = {
     Pump, DistanceTrig
 };
 
-// Add function to get inputs and outputs
+Pins getAllPinsInRobot() {
+    return { inputs, outputs };
+}
