@@ -1,25 +1,38 @@
 #include <Arduino.h>
 #include <Constants.h>
+#include <Senzors.h>
 
-void definePins(const int* pins, bool isInput) {
-    int count = sizeof(pins) / sizeof(pins[0]);
+TaskHandle_t Senzors;
 
-    for (int i = 0; i < count; i++)
+void definePins(const int* pins, int count, bool isInput) {
+    for (int i = 0; i < count; i++) {
         pinMode(pins[i], isInput ? INPUT : OUTPUT);
+        digitalWrite(pins[i], LOW); // Kazdy pin rovno nech vypne (cerpadlo je zapnute od zaciatku)
+
+        // DEBUG
+        Serial.printf("Turning off pin: %d\n", pins[i]);
+    }
+}
+
+void loopSenzors(void * params) {
+    float distance = getDistance();
+
+    Serial.printf("Distance: %d cm\n", distance);
+    delay(1000);
 }
 
 void setup() {
-  // Definovanie kazdeho pinu v robotovi (funkcia, ktora vrati inputy a outputy)
-  const Pins pins = getAllPinsInRobot();
-  
-  definePins(pins.inputs, true);
-  definePins(pins.outputs, false);
-}
+    Serial.begin(115200);
 
-void loop1() {
-    Serial.printf("Hey, I'm looping 1");
+    // Definovanie kazdeho pinu v robotovi (funkcia, ktora vrati inputy a outputy)
+    const Pins pins = getAllPinsInRobot();
+    
+    definePins(pins.inputs.pins, pins.inputs.count, true);
+    definePins(pins.outputs.pins, pins.outputs.count, false);
+
+    xTaskCreatePinnedToCore(loopSenzors, "SenzorsFunc", 10000, NULL, 1, &Senzors, 0);
 }
 
 void loop() {
-    Serial.printf("Hey, I'm main looping");
+    
 }

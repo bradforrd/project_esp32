@@ -1,5 +1,4 @@
-#include <Arduino.h>
-#include <Constants.h>
+#include <Senzors.h>
 
 /// <summary>
 /// Subor (kniznica), ktora sa stara o senzory (predny a spodny)

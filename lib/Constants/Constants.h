@@ -1,3 +1,4 @@
+#pragma once
 #include <Arduino.h>
 
 /// <summary>
@@ -54,10 +55,16 @@
 /// Pomocne funkcie
 /// </summary>
 
+// Struktura, pre samotne piny (outputy alebo input), ktora obsahuje piny a ich pocet (velkost pola)
+struct PinData {
+    const int* pins;
+    const int count;
+};
+
 // Struktura, ktora obsahuje inputy a outputy (tuto strukturu vrati funkcia GetAllPinsInRobot)
 struct Pins {
-    const int* inputs;
-    const int* outputs;
+    const PinData inputs;
+    const PinData outputs;
 };
 
 Pins getAllPinsInRobot();

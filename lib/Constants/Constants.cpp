@@ -12,5 +12,8 @@ constexpr int outputs[] = {
 };
 
 Pins getAllPinsInRobot() {
-    return { inputs, outputs };
+    return { 
+        inputs, sizeof(inputs) / sizeof(inputs[0]), 
+        outputs, sizeof(outputs) / sizeof(outputs[0]) 
+    };
 }
