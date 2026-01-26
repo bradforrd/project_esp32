@@ -9,6 +9,9 @@
 ////////////////////////////
 
 // Funkcia, ktora vrati vzdialenost medzi senzorom a objektom (prekazkou)
+/*
+    fix: need to fix whole function (returning -1.00f always :( )
+*/
 float getDistance() {
     // Zapne a vypne trigger na senzore (ziska potrebny udaj)
     digitalWrite(DistanceTrig, LOW);
@@ -18,10 +21,19 @@ float getDistance() {
     digitalWrite(DistanceTrig, LOW);
 
     // Vrati dlzku pulzu v mikrosekundach (dlzka pulzu sa mysli dlzka casu kedy prijde k objektu a naspat)
-    long duration = pulseIn(DistanceEcho, HIGH);
+    long duration = pulseIn(DistanceEcho, HIGH, 30000);
+
+    if (duration == 0) {
+        return -1.0f; // nic nenamerane
+    }
 
     // Prerata dlzku pulzu na vzdialenost (cm) [z internetu]
-    float distance = duration * 0.034f / 2; // Rychlost zvuku / 2
+    float distance = duration * 0.034f / 2.0f; // Rychlost zvuku / 2
+
+    Serial.printf("TRIG=%d ECHO=%d\n",
+        digitalRead(DistanceTrig),
+        digitalRead(DistanceEcho)
+    );
 
     return distance;
 }
@@ -30,3 +42,36 @@ float getDistance() {
 // Dolny senzor //
 //////////////////
 
+// Vrati true ak ma pod sebou "zem"
+bool isGrounded() {
+    int value = digitalRead(Fall);
+
+    return value == LOW;
+}
+
+//////////////////////
+// Senzor na plamen //
+//////////////////////
+
+bool detectedFlame(String &side) {
+    int left = digitalRead(FireLeft) == LOW;
+    int right = digitalRead(FireRight) == LOW;
+
+    if (left && right) {
+        side = "both";
+        return true;
+    }
+
+    if (left) {
+        side = "left";
+        return true;
+    }
+
+    if (right) {
+        side = "right";
+        return true;
+    }
+
+    side = "none";
+    return false;
+}

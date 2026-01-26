@@ -7,7 +7,7 @@ TaskHandle_t Senzors;
 void definePins(const int* pins, int count, bool isInput) {
     for (int i = 0; i < count; i++) {
         pinMode(pins[i], isInput ? INPUT : OUTPUT);
-        digitalWrite(pins[i], LOW); // Kazdy pin rovno nech vypne (cerpadlo je zapnute od zaciatku)
+        //digitalWrite(pins[i], LOW); // Kazdy pin rovno nech vypne (cerpadlo je zapnute od zaciatku)
 
         // DEBUG
         Serial.printf("Turning off pin: %d\n", pins[i]);
@@ -15,10 +15,23 @@ void definePins(const int* pins, int count, bool isInput) {
 }
 
 void loopSenzors(void * params) {
-    float distance = getDistance();
+    while (true) {
+        // Vzdialenost (predny senzor)
+        float distance = getDistance();
+        Serial.printf("Distance: %.2f cm\n", distance);
+        
+        // Dolny senzor (pad)
+        Serial.println(isGrounded() ? "On ground" : "Falldown detected");
 
-    Serial.printf("Distance: %d cm\n", distance);
-    delay(1000);
+        // Plamen
+        String side;
+        if (detectedFlame(side))
+            Serial.println("Flame detected on side: " + side);
+        else
+            Serial.println("Flame was not detected!");
+
+        vTaskDelay(pdMS_TO_TICKS(1000)); // nemoze tu byt delay(), pretoze to je thread (vlakno)
+    }
 }
 
 void setup() {

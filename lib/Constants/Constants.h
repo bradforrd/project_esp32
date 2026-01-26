@@ -16,8 +16,8 @@
 #define FireRight 26
 
 // Vzdialenost
-#define DistanceTrig 34
-#define DistanceEcho 4
+#define DistanceTrig 4
+#define DistanceEcho 34
 
 // Dolny (detekuje, ci robot je na rovnej ploche)
 #define Fall 33
