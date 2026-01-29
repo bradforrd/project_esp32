@@ -4,3 +4,5 @@ enum MotorDirection {
     Forward,
     Backward
 }
+
+void move(MotorDirection direction);

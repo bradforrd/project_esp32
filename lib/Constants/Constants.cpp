@@ -1,5 +1,4 @@
-#include <Arduino.h>
-#include "Constants.h"
+#include <Constants.h>
 
 // Vsetky inputy na robotovi (data zobrane z Constants.h)
 constexpr int inputs[] = { FireLeft, FireRight, DistanceEcho, Fall, CameraHorizontal, CameraVertical };

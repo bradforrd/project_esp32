@@ -20,8 +20,8 @@ void toggleMotors(int* motors, int count, bool state = false) {
         digitalWrite(motors[i], state ? HIGH : LOW);
 }
 
-// Hlavna funkcia pre pohyb robota, ktora ma 2 argumenty [smer, pocet otacok kolesa]
-void move(MotorDirection direction, float rotations) {
+// Hlavna funkcia pre pohyb robota, ktora ma 1 argument (smer)
+void move(MotorDirection direction) {
     // Ak sa smer, ktory pride do funkcie nerovna aktualnemu smeru, tak sa vypnu vsetky motory
     if (currentState != direction) {
         int backwardCount = sizeof(backwardMotors) / sizeof(backwardMotors[0]);
@@ -32,8 +32,20 @@ void move(MotorDirection direction, float rotations) {
     }
 
     // Motory, ktore sa maju pustit
-    int[] motors = direction == Forward ? forwardMotors : backwardMotors;
+    int[] motors;
+
+    switch (direction) {
+        case Forward:
+            motors = forwardMotors;
+            break;
+        case Backward:
+            motors = backwardMotors;
+            break;
+    }
+
     int count = sizeof(motors) / sizeof(motors[0]);
+
+    currentState = direction;
 
     toggleMotors(motors, count, true);
 }

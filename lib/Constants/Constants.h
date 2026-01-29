@@ -8,6 +8,13 @@
 /// </summary>
 
 /////////////
+// AP data //
+/////////////
+
+#define Wifi_SSID "network"
+#define Wifi_Password "network"
+
+/////////////
 // Senzory //
 /////////////
 
