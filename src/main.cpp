@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <Constants.h>
 #include <Senzors.h>
+#include <Motors.h>
 #include <Internet.h>
 
 TaskHandle_t Senzors;
@@ -28,9 +29,7 @@ void loopSenzors(void * params) {
 
 void loopMotors(void * params) {
     while (true) {
-        Serial.println("Looping motors func");
-
-        vTaskDelay(pdMS_TO_TICKS(1000));
+        // move(Forward);
     }
 }
 

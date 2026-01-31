@@ -2,7 +2,9 @@
 
 enum MotorDirection {
     Forward,
-    Backward
-}
+    Backward,
+    Right,
+    Left
+};
 
 void move(MotorDirection direction);
