@@ -1,6 +1,6 @@
 type Direction = 'forward' | 'backward' | 'right' | 'left';
 
-const ESP32_IP = '192.168.1.42';
+const ESP32_IP = '192.168.4.1';
 
 function App() {
   const moveButton = async (direction: Direction) => {

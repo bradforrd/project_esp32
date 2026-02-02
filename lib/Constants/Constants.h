@@ -11,8 +11,8 @@
 // AP data //
 /////////////
 
-#define Wifi_SSID "network"
-#define Wifi_Password "network"
+#define Wifi_SSID "JUBAR BOT"
+#define Wifi_Password "jubar123"
 
 /////////////
 // Senzory //

@@ -3,9 +3,12 @@
 #include <Senzors.h>
 #include <Motors.h>
 #include <Internet.h>
+#include <Webpage.h>
 
 TaskHandle_t Senzors;
 TaskHandle_t Motors;
+
+WiFiServer server(80);
 
 void loopSenzors(void * params) {
     while (true) {
@@ -29,7 +32,7 @@ void loopSenzors(void * params) {
 
 void loopMotors(void * params) {
     while (true) {
-        // move(Forward);
+        
     }
 }
 
@@ -57,8 +60,10 @@ void setup() {
 
     xTaskCreatePinnedToCore(loopSenzors, "SenzorsFunc", 10000, NULL, 1, &Senzors, 0);
     xTaskCreatePinnedToCore(loopMotors, "MotorsFunc", 10000, NULL, 1, &Motors, 1);
+
+    server.begin();
 }
 
 void loop() {
-    
+  handleWebpage(server);
 }
