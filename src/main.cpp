@@ -3,12 +3,35 @@
 #include <Senzors.h>
 #include <Motors.h>
 #include <Internet.h>
-#include <Webpage.h>
+#include <LittleFS.h>
 
 TaskHandle_t Senzors;
 TaskHandle_t Motors;
 
-WiFiServer server(80);
+WebServer server(80);
+
+void handleRoot() {
+  String page = R"rawliteral(
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>AC Motor</title>
+<style>
+body { font-family: Arial; text-align: center; margin-top: 50px; }
+button { font-size: 30px; padding: 20px 40px; }
+</style>
+</head>
+<body>
+<h1>Ovládanie AC motora</h1>
+<button onclick="fetch('/motors')">SPUSTIŤ</button>
+<button onclick="fetch('/off')">STOP</button>
+</body>
+</html>
+)rawliteral";
+
+  server.send(200, "text/html", page);
+}
 
 void loopSenzors(void * params) {
     while (true) {
@@ -30,11 +53,14 @@ void loopSenzors(void * params) {
     }
 }
 
+/*
 void loopMotors(void * params) {
     while (true) {
         
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
+*/
 
 void definePins(const int* pins, int count, bool isInput) {
     for (int i = 0; i < count; i++) {
@@ -46,8 +72,17 @@ void definePins(const int* pins, int count, bool isInput) {
     }
 }
 
+void toggleMotors() {
+    move(Forward);
+}
+
 void setup() {
     Serial.begin(115200);
+
+    if(!LittleFS.begin()){
+        Serial.println("An Error has occurred while mounting LittleFS");
+        return;
+    }
 
     // Definovanie kazdeho pinu v robotovi (funkcia, ktora vrati inputy a outputy)
     const Pins pins = getAllPinsInRobot();
@@ -58,12 +93,15 @@ void setup() {
     // Pripojenie ESP do WiFi / vytvorenie AP
     connectToWiFi();
 
-    xTaskCreatePinnedToCore(loopSenzors, "SenzorsFunc", 10000, NULL, 1, &Senzors, 0);
-    xTaskCreatePinnedToCore(loopMotors, "MotorsFunc", 10000, NULL, 1, &Motors, 1);
+    // xTaskCreatePinnedToCore(loopSenzors, "SenzorsFunc", 10000, NULL, 1, &Senzors, 0);
+    // xTaskCreatePinnedToCore(loopMotors, "MotorsFunc", 10000, NULL, 1, &Motors, 1);
+
+    server.on("/", handleRoot);
+    server.on("/motors", toggleMotors);
 
     server.begin();
 }
 
 void loop() {
-  handleWebpage(server);
+    server.handleClient();
 }

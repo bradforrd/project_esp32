@@ -11,8 +11,8 @@
 // AP data //
 /////////////
 
-#define Wifi_SSID "JUBAR BOT"
-#define Wifi_Password "jubar123"
+#define Wifi_SSID "Telekom-153604"
+#define Wifi_Password "nr4bm67tsrbpter4"
 
 /////////////
 // Senzory //
