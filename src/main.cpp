@@ -3,9 +3,14 @@
 #include <Senzors.h>
 #include <Motors.h>
 #include <Internet.h>
+#include <Servo.h>
+#include <Camera.h>
 
 TaskHandle_t Senzors;
 TaskHandle_t Motors;
+
+Servo servoPan;
+Servo servoTilt;
 
 WebServer server(80);
 
@@ -71,51 +76,48 @@ void handleRoot() {
         filter: drop-shadow(0 0 10px #2dd4bf);
         clip-path: polygon(0 0, 0% 100%, 100% 0%);
     }
-    .controls {
-        border: solid #34d399 1px;
-        width: 550px;
-        padding: 10px 20px;
-        background: #34d39925;
-        border-radius: 7px;
-        box-shadow: 0 0 50px #34d39925;
-        h1 { color: #2dd4bf; filter: drop-shadow(0 0 30px #2dd4bf); };
-        .container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            align-items: center;
-            justify-content: center;
-            margin: 10px 0;
-            .control-button {
-                color: #2dd4bf;
-                background-color: #2dd4bf50;
-                border: none;
-                padding: 15px 0;
-                font-size: 22px;
-                cursor: pointer;
-                transition: all 0.3s;
-                width: 100%;
-            }
-            .control-button:not(div) { width: 75%; }
-            .control-button:hover { background-color: #2dd4bf75; transform: scale(1.05); }
-            div { display: flex; gap: 10px; width: 100%; }
+    .controller {
+        position: absolute;
+        top: 55%; left: 52%;
+        transform: translate(-50%, -50%);
+        img { transform: scale(1.4); z-index: 0; }
+        .invisible {
+            outline: solid #fff 1px;
+            position: absolute;
+            width: 50px; height: 40px;
+            /*background: none; // DELETE !!!
+            border: none;*/
+            
+        }
+        .cam-container {
+            position: absolute;
+            background: #ffffff;
+            top: 14%; left: 14%;
+            width: 645px; height: 403px;
         }
     }
 </style>
 <body>
     <div class="nav-title">
-        <h1>JUBAR BOT</h1>
-        <p>Jednoduchý hasičský robot</p>
+        <h1>ESP32 robot</h1>
+        <p>S funkciou hasenia plameňa</p>
     </div>
-    <div class="controls">
-        <h1>Ovládanie</h1>
-        <div class="container">
-            <button class="control-button" onclick="fetch('/motorForward')">Vpred</button>
-            <div>
-                <button class="control-button" onclick="fetch('/motorLeft')">Vľavo</button>
-                <button class="control-button" onclick="fetch('/motorRight')">Vpravo</button>
-            </div>
-            <button class="control-button" onclick="fetch('/motorBackward')">Dozadu</button>
+    <div class="controller">
+        <img src="https://i.postimg.cc/RFCkPJG2/controller.png" />
+        <div class="right-side">
+            <button onclick="fetch('motorForward')" id="up" class="invisible" style="clip-path: polygon(49% 100%, 100% 38%, 100% 0, 0 0, 0% 38%); bottom: 39%; right: 0%;"></button>
+            <button onclick="fetch('motorBackward')" id="down" class="invisible" style="clip-path: polygon(50% 0%, 100% 51%, 100% 100%, 0 100%, 0 52%); bottom: 29%; right: 0%;"></button>
+            <button onclick="fetch('motorRight')" id="right" class="invisible" style="clip-path: polygon(16% 51%, 55% 0, 100% 0, 100% 100%, 57% 100%); bottom: 34%; right: -2%;"></button>
+            <button onclick="fetch('motorLeft')" id="left" class="invisible" style="clip-path: polygon(74% 51%, 39% 0, 0 0, 0 100%, 44% 100%); bottom: 34%; right: 2%;"></button>
+        </div>
+        <div class="left-side">
+            <button onclick="fetch('cameraUp')" id="up" class="invisible" style="clip-path: polygon(49% 100%, 100% 38%, 100% 0, 0 0, 0% 38%); bottom: 39%; left: -8.5%;"></button>
+            <button onclick="fetch('cameraDown')" id="down" class="invisible" style="clip-path: polygon(50% 0%, 100% 51%, 100% 100%, 0 100%, 0 52%); bottom: 29%; left: -8.5%;"></button>
+            <button onclick="fetch('cameraRight')" id="right" class="invisible" style="clip-path: polygon(16% 51%, 55% 0, 100% 0, 100% 100%, 57% 100%); bottom: 34%; left: -6%;"></button>
+            <button onclick="fetch('cameraLeft')" id="left" class="invisible" style="clip-path: polygon(74% 51%, 39% 0, 0 0, 0 100%, 44% 100%); bottom: 34%; left: -10.5%;"></button>
+        </div>
+        <div class="cam-container">
+            <!-- CAM VIEW -->
         </div>
     </div>
 </body>
@@ -171,6 +173,10 @@ void setup() {
     definePins(pins.inputs.pins, pins.inputs.count, true);
     definePins(pins.outputs.pins, pins.outputs.count, false);
 
+    // Serva na kameru
+    servoPan.attach(CameraHorizontal);
+    servoTilt.attach(CameraVertical);
+
     // Pripojenie ESP do WiFi / vytvorenie AP
     connectToWiFi();
 
@@ -178,10 +184,16 @@ void setup() {
     // xTaskCreatePinnedToCore(loopMotors, "MotorsFunc", 10000, NULL, 1, &Motors, 1);
 
     server.on("/", handleRoot);
+
     server.on("/motorForward", []() { toggleMotors(Forward); });
     server.on("/motorLeft", []() { toggleMotors(Left); });
     server.on("/motorRight", []() { toggleMotors(Right); });
     server.on("/motorBackward", []() { toggleMotors(Backward); });
+
+    server.on("/cameraUp", []() { moveCamera(servoTilt, "vertical", -1); });
+    server.on("/cameraDown", []() { moveCamera(servoTilt, "vertical", 1); });
+    server.on("/cameraRight", []() { moveCamera(servoPan, "horizontal", -25); });
+    server.on("/cameraLeft", []() { moveCamera(servoPan, "horizontal", 25); });
 
     server.begin();
 }

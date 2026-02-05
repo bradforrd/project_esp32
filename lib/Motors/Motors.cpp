@@ -43,6 +43,16 @@ void move(MotorDirection direction) {
         toggleMotors(leftMotors, 4);
     }
 
+    // Ak je stlaceny rovnaky smer tak, nech robot zastavi
+    if (currentState == direction) {
+        toggleMotors(backwardMotors, 4);
+        toggleMotors(forwardMotors, 4);
+        toggleMotors(rightMotors, 4);
+        toggleMotors(leftMotors, 4);
+
+        return;
+    }
+
     const int* motors = nullptr;
 
     switch (direction) {
