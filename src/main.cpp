@@ -13,6 +13,8 @@ TaskHandle_t Motors;
 Servo servoPan;
 Servo servoTilt;
 
+bool pumpState = false;
+
 WebServer server(80);
 
 #define PWDN_GPIO_NUM 32
@@ -150,6 +152,7 @@ void handleRoot() {
             background: #ffffff;
             top: 14%; left: 14%;
             width: 645px; height: 403px;
+            img { width: 100%; height: 100%; }
         }
     }
 </style>
@@ -172,9 +175,13 @@ void handleRoot() {
             <button onclick="fetch('cameraRight')" id="right" class="invisible" style="clip-path: polygon(16% 51%, 55% 0, 100% 0, 100% 100%, 57% 100%); bottom: 34%; left: -6%;"></button>
             <button onclick="fetch('cameraLeft')" id="left" class="invisible" style="clip-path: polygon(74% 51%, 39% 0, 0 0, 0 100%, 44% 100%); bottom: 34%; left: -10.5%;"></button>
         </div>
+        <div class="pump-button">
+            <button onclick="fetch('pump')" class="invisible" style="clip-path: circle(50% at 50% 50%); top: 23%; left: -7%; transform: scale(1.6);"></button>
+            <button onclick="fetch('pump')" class="invisible" style="clip-path: circle(50% at 50% 50%); top: 23%; left: 94%; transform: scale(1.6);"></button>
+        </div>
         <div class="cam-container">
             <!-- CAM VIEW -->
-            <img src="http://192.168.1.30/stream">
+            
         </div>
     </div>
 </body>
@@ -244,6 +251,13 @@ void toggleMotors(MotorDirection direction) {
     move(direction);
 }
 
+void togglePump() {
+    server.send(200, "text/plain", "OK");
+    pumpState = !pumpState;
+
+    digitalWrite(Pump, pumpState ? HIGH : LOW);
+}
+
 void setup() {
     Serial.begin(115200);
 
@@ -260,7 +274,7 @@ void setup() {
     // Pripojenie ESP do WiFi / vytvorenie AP
     connectToWiFi();
 
-    initCamera();
+    //initCamera();
 
     // xTaskCreatePinnedToCore(loopSenzors, "SenzorsFunc", 10000, NULL, 1, &Senzors, 0);
     // xTaskCreatePinnedToCore(loopMotors, "MotorsFunc", 10000, NULL, 1, &Motors, 1);
@@ -272,12 +286,14 @@ void setup() {
     server.on("/motorRight", []() { toggleMotors(Right); });
     server.on("/motorBackward", []() { toggleMotors(Backward); });
 
-    server.on("/cameraUp", []() { moveCamera(servoTilt, "vertical", -5); });
-    server.on("/cameraDown", []() { moveCamera(servoTilt, "vertical", 5); });
+    server.on("/cameraUp", []() { moveCamera(servoTilt, "vertical", -10); });
+    server.on("/cameraDown", []() { moveCamera(servoTilt, "vertical", 10); });
     server.on("/cameraRight", []() { moveCamera(servoPan, "horizontal", -25); });
     server.on("/cameraLeft", []() { moveCamera(servoPan, "horizontal", 25); });
 
-    server.on("/stream", handleStream);
+    server.on("/pump", []() { togglePump(); });
+
+    //server.on("/stream", handleStream);
 
     server.begin();
 }
