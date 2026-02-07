@@ -53,8 +53,8 @@ void initCamera() {
     config.pin_pclk = PCLK_GPIO_NUM;
     config.pin_vsync = VSYNC_GPIO_NUM;
     config.pin_href = HREF_GPIO_NUM;
-    config.pin_sccb_sda = SIOD_GPIO_NUM;
-    config.pin_sccb_scl = SIOC_GPIO_NUM;
+    config.pin_sscb_sda = SIOD_GPIO_NUM;
+    config.pin_sscb_scl = SIOC_GPIO_NUM;
     config.pin_pwdn = PWDN_GPIO_NUM;
     config.pin_reset = RESET_GPIO_NUM;
 
@@ -181,7 +181,7 @@ void handleRoot() {
         </div>
         <div class="cam-container">
             <!-- CAM VIEW -->
-            
+            <img src="/stream" />
         </div>
     </div>
 </body>
@@ -190,7 +190,6 @@ void handleRoot() {
 )rawliteral";
 
   server.send(200, "text/html", page);
-  server.send(200, "text/plain", "ESP32-CAM OK\nStream: /stream");
 }
 
 void handleStream() {
@@ -274,7 +273,7 @@ void setup() {
     // Pripojenie ESP do WiFi / vytvorenie AP
     connectToWiFi();
 
-    //initCamera();
+    initCamera();
 
     // xTaskCreatePinnedToCore(loopSenzors, "SenzorsFunc", 10000, NULL, 1, &Senzors, 0);
     // xTaskCreatePinnedToCore(loopMotors, "MotorsFunc", 10000, NULL, 1, &Motors, 1);
@@ -293,7 +292,7 @@ void setup() {
 
     server.on("/pump", []() { togglePump(); });
 
-    //server.on("/stream", handleStream);
+    server.on("/stream", HTTP_GET, handleStream);
 
     server.begin();
 }
