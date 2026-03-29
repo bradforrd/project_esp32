@@ -178,7 +178,7 @@ void handleRoot() {
         </div>
         <div class="cam-container">
             <!-- CAM VIEW -->
-            
+            <img src="http://192.168.0.121:81/stream" width="320" height="240" style="transform: rotate(180deg);"/>
         </div>
     </div>
 </body>
@@ -270,7 +270,7 @@ void setup() {
     // Pripojenie ESP do WiFi / vytvorenie AP
     connectToWiFi();
 
-    initCamera();
+    //initCamera();
 
     // xTaskCreatePinnedToCore(loopSenzors, "SenzorsFunc", 10000, NULL, 1, &Senzors, 0);
     // xTaskCreatePinnedToCore(loopMotors, "MotorsFunc", 10000, NULL, 1, &Motors, 1);

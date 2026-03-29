@@ -16,14 +16,14 @@ constexpr int backwardMotors[MOTOR_COUNT] = {
 
 // Motory, ktore maju byt spustene, ked robot chce ist doprava
 constexpr int rightMotors[MOTOR_COUNT] = {
-    FrontRightBackward, RearRightBackward,
-    FrontLeftForward, RearLeftForward
+    FrontRightBackward, RearRightForward,
+    FrontLeftForward, RearLeftBackward
 };
 
 // Motory, ktore maju byt spustene, ked robot chce ist dolava
 constexpr int leftMotors[MOTOR_COUNT] = {
     FrontLeftBackward, FrontRightForward,
-    RearLeftBackward, RearRightForward
+    RearLeftForward, RearRightBackward
 };
 
 MotorDirection currentState;

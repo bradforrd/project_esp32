@@ -11,8 +11,8 @@
 // AP data //
 /////////////
 
-#define Wifi_SSID "Telekom-153604"
-#define Wifi_Password "nr4bm67tsrbpter4"
+#define Wifi_SSID "Juhasovci"
+#define Wifi_Password "wsx3SKpiatok9112018."
 
 /////////////
 // Senzory //
